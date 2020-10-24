@@ -1,0 +1,35 @@
+version: '3'
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443" 
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ${DOCKER_PATH}/nginx/certs:/etc/nginx/certs:cached
+      - ${DOCKER_PATH}/nginx/nginx.tmpl:/app/nginx.tmpl:cached
+    networks:
+      - default
+      - develop
+  mysqlhost:
+    image: mariadb:10.4
+    networks:
+      - default
+      - mysql
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/my.cnf:delegated
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+networks:
+  default:
+  
+  develop:
+
+  mysql:
+
+volumes:
+  mysql-data:
